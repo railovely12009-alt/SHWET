@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart Page</title>
+<link rel="stylesheet" href="cart.css">
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+
+    <div class="logo">MyShop</div>
+
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="cart.html">Cart</a></li>
+         <li><a href="content.html">content</a></li>
+          <li><a href="login.html">login</a></li>
+    </ul>
+
+</div>
+
+<!-- Cart Section -->
+<div class="cart-container">
+
+    <h1 class="cart-title">Shopping Cart</h1>
+
+    <!-- Product 1 -->
+    <div class="cart-item">
+
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e" alt="Headphone">
+
+        <div class="item-details">
+            <h3>Wireless Headphone</h3>
+            <p>High quality bass headphone</p>
+        </div>
+
+        <div class="price">₹2,499</div>
+
+        <div class="quantity">
+            <input type="number" value="1">
+        </div>
+
+        <button class="remove-btn">Remove</button>
+
+    </div>
+
+    <!-- Product 2 -->
+    <div class="cart-item">
+
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853" alt="Laptop">
+
+        <div class="item-details">
+            <h3>Gaming Laptop</h3>
+            <p>Powerful gaming laptop</p>
+        </div>
+
+        <div class="price">₹59,999</div>
+
+        <div class="quantity">
+            <input type="number" value="1">
+        </div>
+
+        <button class="remove-btn">Remove</button>
+
+    </div>
+
+    <!-- Total -->
+    <div class="total">
+
+        <h2>Total: ₹62,498</h2>
+
+        <button class="checkout-btn">Proceed To Checkout</button>
+
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>© 2026 MyShop | All Rights Reserved</p>
+</footer>
+
+</body>
+</html><!-- Cart Page -->
+<script>
+
+let cart = [];
+
+// Load cart from localStorage
+window.onload = function () {
+    const savedCart = localStorage.getItem("cart");
+
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
+
+    renderCart();
+};
+
+
+// Render Cart Items
+function renderCart() {
+
+    const container = document.querySelector(".cart-container");
+
+    // Remove old items (except title + total)
+    document.querySelectorAll(".cart-item").forEach(el => el.remove());
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+
+        total += item.price * (item.qty || 1);
+
+        const div = document.createElement("div");
+        div.classList.add("cart-item");
+
+        div.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+
+            <div class="item-details">
+                <h3>${item.name}</h3>
+                <p>Product added to cart</p>
+            </div>
+
+            <div class="price">₹${item.price}</div>
+
+            <div class="quantity">
+                <input type="number" min="1" value="${item.qty || 1}"
+                onchange="updateQty(${index}, this.value)">
+            </div>
+
+            <button class="remove-btn" onclick="removeItem(${index})">
+                Remove
+            </button>
+        `;
+
+        container.insertBefore(div, document.querySelector(".total"));
+    });
+
+    document.querySelector(".total h2").innerText = "Total: ₹" + total;
+
+    if (cart.length === 0) {
+        document.querySelector(".cart-container").innerHTML =
+            "<h2 style='text-align:center'>Your Cart is Empty 🛒</h2>";
+    }
+}
+
+
+// Update Quantity
+function updateQty(index, qty) {
+    cart[index].qty = parseInt(qty);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    renderCart();
+}
+
+
+// Remove Item
+function removeItem(index) {
+
+    cart.splice(index, 1);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    renderCart();
+}
+
+</script>
